@@ -66,7 +66,7 @@ SEXP setlevelsR(SEXP x, SEXP old_lvl, SEXP new_lvl, SEXP skip_absent) {
   return ans;
 }
 
-SEXP removeNA(SEXP x) {
+/*SEXP removeNA(SEXP x) {
   const R_xlen_t len_x = xlength(x);
   SEXPTYPE tx = UTYPEOF(x);
   R_xlen_t nb = countNA(x);
@@ -135,13 +135,78 @@ SEXP removeNA(SEXP x) {
   }
   UNPROTECT(1);
   return ans;
+}*/
+
+SEXP countR(SEXP x, SEXP y) {
+  const R_xlen_t len_x = xlength(x);
+  const R_xlen_t len_y = xlength(y);
+  if (len_y != 1 || isNull(y)) {
+    error("Argument 'value' must be non NULL and length 1.");
+  }
+  SEXPTYPE tx = UTYPEOF(x);
+  SEXPTYPE ty = UTYPEOF(y);
+  if (tx != ty) {
+    error("Type of 'value' (%s) is different than type of 'x' (%s). Please make sure both have the same type.", type2char(ty), type2char(tx));
+  }
+  R_xlen_t cnt = 0;
+  switch(tx) {
+  case NILSXP: break;
+  case LGLSXP: {
+    const int *restrict px = LOGICAL(x);
+    const int py = LOGICAL(y)[0];
+    for (ssize_t i=0; i<len_x; ++i) {
+      if (px[i]== py) {
+        cnt++;
+      }
+    }
+  } break;
+  case INTSXP: {
+    const int *restrict px = INTEGER(x);
+    const int py = INTEGER(y)[0];
+    for (ssize_t i=0; i<len_x; ++i) {
+      if (px[i]== py) {
+        cnt++;
+      }
+    }
+  } break;
+  case REALSXP: {
+    const double *restrict px = REAL(x);
+    const double py = REAL(y)[0];
+    for (ssize_t i=0; i<len_x; ++i) {
+      if (px[i]== py) {
+        cnt++;
+      }
+    }
+  } break;
+  case CPLXSXP: {
+    const Rcomplex *restrict px = COMPLEX(x);
+    const Rcomplex py = COMPLEX(y)[0];
+    for (ssize_t i=0; i<len_x; ++i) {
+      if (EQUAL_CPLX(px[i], py)) {
+        cnt++;
+      }
+    }
+  } break;
+  case STRSXP: {
+    const char* py = RCHAR(y, 0);
+    for (ssize_t i=0; i<len_x; ++i) {
+      if (RCHAR(x, i) == py) {
+        cnt++;
+      }
+    }
+  } break;
+  default:
+    error("Type %s is not supported.", type2char(tx));
+  }
+  return cnt > INT_MAX ? ScalarReal(cnt) : ScalarInteger(cnt);
 }
 
-R_xlen_t countNA(SEXP x) {
+SEXP countNAR(SEXP x) {
   const R_xlen_t len_x = xlength(x);
   SEXPTYPE tx = UTYPEOF(x);
   R_xlen_t cnt = 0;
   switch(tx) {
+  case NILSXP: break;
   case LGLSXP: {
     const int *restrict px = LOGICAL(x);
     for (ssize_t i=0; i<len_x; ++i) {
@@ -182,13 +247,22 @@ R_xlen_t countNA(SEXP x) {
       }
     }
   } break;
+  case VECSXP: {
+    const SEXP *restrict px = SEXPPTR_RO(x);
+    SEXP ans = PROTECT(allocVector(VECSXP, len_x));
+    for (ssize_t i=0; i<len_x; ++i) {
+      SET_VECTOR_ELT(ans, i, countNAR(px[i]));
+    }
+    UNPROTECT(1);
+    return ans;
+  } break;
   default:
     error("Type %s is not supported.", type2char(tx));
   }
-  return cnt;
+  return cnt > INT_MAX ? ScalarReal(cnt) : ScalarInteger(cnt);
 }
 
-Rboolean hasNA(SEXP x) {
+/*Rboolean hasNA(SEXP x) {
   const R_xlen_t len_x = xlength(x);
   SEXPTYPE tx = UTYPEOF(x);
   Rboolean na = FALSE;
@@ -242,26 +316,44 @@ Rboolean hasNA(SEXP x) {
     error("Type %s is not supported.", type2char(tx));
   }
   return na;
-}
+}*/
 
 SEXP uniquePR(SEXP x) {
   const R_xlen_t xlen=xlength(x);
   const SEXP lg=PROTECT(duplicated(x, FALSE));
   const int *restrict plg=LOGICAL(lg);
-  SEXP pos = PROTECT(allocVector(INTSXP, xlen));
-  int *restrict p=INTEGER(pos);
   R_xlen_t k=0;
-  for (R_xlen_t i=0; i<xlen; ++i) {
-    if (plg[i]==0) {
-      p[k++]=i+1;
+  const bool isLong = xlen > INT_MAX;
+  SEXP pos, ans=R_NilValue;
+  if (isLong) {
+    pos = PROTECT(allocVector(REALSXP, xlen));
+    double *restrict p=REAL(pos);
+    for (R_xlen_t i=0; i<xlen; ++i) {
+      if (plg[i]==0) {
+        p[k++]=i+1;
+      }
     }
+    if(k==xlen) {
+      UNPROTECT(2);
+      return pos;
+    }
+    ans = PROTECT(allocVector(REALSXP, k));
+    memcpy(REAL(ans), p, (unsigned)k*sizeof(double));
+  } else {
+    pos = PROTECT(allocVector(INTSXP, xlen));
+    int *restrict p=INTEGER(pos);
+    for (int i=0; i<xlen; ++i) {
+      if (plg[i]==0) {
+        p[k++]=i+1;
+      }
+    }
+    if(k==xlen) {
+      UNPROTECT(2);
+      return pos;
+    }
+    ans = PROTECT(allocVector(INTSXP, k));
+    memcpy(INTEGER(ans), p, (unsigned)k*sizeof(int));
   }
-  if(k==xlen) {
-    UNPROTECT(2);
-    return pos;
-  }
-  SEXP ans = PROTECT(allocVector(INTSXP, k));
-  memcpy(INTEGER(ans), p, (unsigned)k*sizeof(int));
   UNPROTECT(3);
   return ans;
 }
