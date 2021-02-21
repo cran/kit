@@ -1,6 +1,6 @@
 /*
  * kit : Useful R Functions Implemented in C
- * Copyright (C) 2020  Morgan Jacob
+ * Copyright (C) 2020-2021  Morgan Jacob
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,6 +197,7 @@ SEXP nswitchR(SEXP x, SEXP na, SEXP nthreads, SEXP chkenc, SEXP args) {
     } break;
     case STRSXP: {
       const SEXP *restrict px = STRING_PTR(utfcon ? xans : x);
+      OMP_PARALLEL_FOR(nth)
       for (ssize_t i = 0; i < n; ++i) {
         const int *restrict pto = LOGICAL(PTR_ETL(args, 2*i+1));
         const SEXP *restrict pvalues = STRING_PTR(utfcon ? vans : PTR_ETL(args, 2*i));
@@ -289,6 +290,7 @@ SEXP nswitchR(SEXP x, SEXP na, SEXP nthreads, SEXP chkenc, SEXP args) {
     } break;
     case STRSXP: {
       const SEXP *restrict px = STRING_PTR(utfcon ? xans : x);
+      OMP_PARALLEL_FOR(nth)
       for (ssize_t i = 0; i < n; ++i) {
         const int *restrict pto = INTEGER(PTR_ETL(args, 2*i+1));
         const SEXP *restrict pvalues = STRING_PTR(utfcon ? vans : PTR_ETL(args, 2*i));
@@ -381,6 +383,7 @@ SEXP nswitchR(SEXP x, SEXP na, SEXP nthreads, SEXP chkenc, SEXP args) {
     } break;
     case STRSXP: {
       const SEXP *restrict px = STRING_PTR(utfcon ? xans : x);
+      OMP_PARALLEL_FOR(nth)
       for (ssize_t i = 0; i < n; ++i) {
         const double *restrict pto = REAL(PTR_ETL(args, 2*i+1));
         const SEXP *restrict pvalues = STRING_PTR(utfcon ? vans : PTR_ETL(args, 2*i));
@@ -474,6 +477,7 @@ SEXP nswitchR(SEXP x, SEXP na, SEXP nthreads, SEXP chkenc, SEXP args) {
     } break;
     case STRSXP: {
       const SEXP *restrict px = STRING_PTR(utfcon ? xans : x);
+      OMP_PARALLEL_FOR(nth)
       for (ssize_t i = 0; i < n; ++i) {
         const Rcomplex *restrict pto = COMPLEX(PTR_ETL(args, 2*i+1));
         const SEXP *restrict pvalues = STRING_PTR(utfcon ? vans : PTR_ETL(args, 2*i));

@@ -1,6 +1,6 @@
 /*
  * kit : Useful R Functions Implemented in C
- * Copyright (C) 2020  Morgan Jacob
+ * Copyright (C) 2020-2021  Morgan Jacob
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -221,6 +221,7 @@ SEXP subSetRowDataFrame(SEXP df, SEXP rws) {
       for (R_xlen_t j = 0; j < len_rws; ++j) {
         pc[j] = ptmp[prws[j]];
       }
+      copyMostAttrib(pdf[i], TYPECOL);
       SET_VECTOR_ELT(dfo, i, TYPECOL);
       UNPROTECT(1);
     } break;
@@ -253,6 +254,7 @@ SEXP subSetRowDataFrame(SEXP df, SEXP rws) {
       for (R_xlen_t j = 0; j < len_rws; ++j) {
         pc[j] = ptmp[prws[j]];
       }
+      copyMostAttrib(pdf[i], TYPECOL);
       SET_VECTOR_ELT(dfo, i, TYPECOL);
       UNPROTECT(1);
     } break;
@@ -263,11 +265,12 @@ SEXP subSetRowDataFrame(SEXP df, SEXP rws) {
       for (R_xlen_t j = 0; j < len_rws; ++j) {
         pc[j] = ptmp[prws[j]];
       }
+      copyMostAttrib(pdf[i], TYPECOL);
       SET_VECTOR_ELT(dfo, i, TYPECOL);
       UNPROTECT(1);
     } break;
-    default:
-      error("Type %s is not supported.", type2char(UTYPEOF(pdf[i]))); // add Raw type ?
+    default: // # nocov
+      error("Type %s is not supported.", type2char(UTYPEOF(pdf[i]))); // # nocov
     }
   }
   UNPROTECT(3);
@@ -330,8 +333,8 @@ SEXP subSetRowMatrix(SEXP mat, SEXP rws) {
       }
     }
   } break;
-  default:
-    error("Type %s is not supported.", type2char(UTYPEOF(mat))); // add Raw type ?
+  default: // # nocov
+    error("Type %s is not supported.", type2char(UTYPEOF(mat))); // # nocov
   }
   UNPROTECT(1);
   return mato;
@@ -433,7 +436,7 @@ SEXP addColToDataFrame(SEXP df, SEXP mcol, SEXP coln) {
     INTEGER(rownam)[1] = -(int)len_col;
 	  setAttrib(dfo, R_RowNamesSymbol, rownam);
   } else {
-    const R_xlen_t len_row = xlength(VECTOR_ELT(df, 0));
+    const R_xlen_t len_row = xlength(VECTOR_ELT(df, 0));// # nocov start
 	  dfo = PROTECT(allocVector(VECSXP, len_df + len_col));
     for (int i = 0; i < len_df; ++i) {
       SET_VECTOR_ELT(dfo, i, VECTOR_ELT(df, i));
@@ -454,7 +457,7 @@ SEXP addColToDataFrame(SEXP df, SEXP mcol, SEXP coln) {
     SEXP rownam = PROTECT(allocVector(INTSXP, 2));
     INTEGER(rownam)[0] = NA_INTEGER;
     INTEGER(rownam)[1] = -(int)len_row;
-	  setAttrib(dfo, R_RowNamesSymbol, rownam);
+	  setAttrib(dfo, R_RowNamesSymbol, rownam);// # nocov end
   }
   UNPROTECT(4);
   return dfo;
@@ -476,7 +479,7 @@ SEXP countOccurR(SEXP x) { // can be improved for factors
   size_t M;
   if (tx == INTSXP || tx == STRSXP || tx == REALSXP || tx == CPLXSXP ) {
     if(n >= 1073741824) {
-      error("Length of 'x' is too large. (Long vector not supported yet)");
+      error("Length of 'x' is too large. (Long vector not supported yet)"); // # nocov
     }
     const size_t n2 = 2U * (size_t) n;
     M = 256;
@@ -538,7 +541,7 @@ SEXP countOccurR(SEXP x) { // can be improved for factors
           pans_ct[h[id]-1]++;
           goto ibl;
         }
-        id++; id %= M;
+        id++; id %= M; // # nocov
       }
       h[id] = (int) i + 1;
       pans_l[i]++;
@@ -570,7 +573,7 @@ SEXP countOccurR(SEXP x) { // can be improved for factors
           pans_ct[h[id]-1]++;
           goto rbl;
         }
-        id++; id %= M;
+        id++; id %= M; // # nocov
       }
       h[id] = (int) i + 1;
       pans_l[i]++;
@@ -644,7 +647,7 @@ SEXP countOccurR(SEXP x) { // can be improved for factors
           pans_ct[h[id]-1]++;
           goto sbl;
         }
-        id++; id %= M;
+        id++; id %= M; // # nocov
       }
       h[id] = (int) i + 1;
       pans_l[i]++;
@@ -687,7 +690,7 @@ SEXP countOccurDataFrameR(SEXP x) { // move to matrix if possible (change hash a
   const R_xlen_t len_i = xlength(px[0]);
   SEXP mlv = PROTECT(allocMatrix(INTSXP, (int)len_i, (int)len_x));
   for (R_xlen_t i = 0; i < len_x; ++i) {
-    memcpy(INTEGER(mlv)+i*len_i, INTEGER(PROTECT(dupVecIndexOnlyR(px[i]))), (unsigned)len_i*sizeof(int));
+    memcpy(INTEGER(mlv)+i*len_i, INTEGER(PROTECT(dupVecIndexOnlyR(px[i],ScalarLogical(false)))), (unsigned)len_i*sizeof(int));
   }
   UNPROTECT((int)len_x);
   const size_t n2 = 2U * (size_t) len_i;

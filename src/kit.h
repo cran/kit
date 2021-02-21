@@ -49,18 +49,22 @@
 #define REQUAL(x, y)  (N_ISNAN(x, y) ? (x == y) : (B_IsNA(x, y) || B_IsNaN(x, y)))
 #define CEQUAL(x, y) ((N_ISNAN(x.r, x.i) && N_ISNAN(y.r, y.i)) ? (x.r == y.r && x.i == y.i) : (C_IsNA(x) ? C_IsNA(y) : (C_IsNA(y) ? 0 : (C_ISNAN(x.r, y.r) && C_ISNAN(x.i, y.i)))))
 #define STR_DF mkString("data.frame")
+#define MAX(a,b) (((a)>(b))?(a):(b))
+#define IS_LOGICAL(x) (isLogical(x) && LENGTH(x)==1)
 
 extern SEXP addColToDataFrame(SEXP df, SEXP mcol, SEXP coln);
+extern SEXP charToFactR(SEXP x, SEXP decreasingArg, SEXP nthread, SEXP nalast, SEXP env);
 extern SEXP countR(SEXP x, SEXP y);
 extern SEXP countNAR(SEXP x);
 extern SEXP countOccurR(SEXP x);
 extern SEXP countOccurDataFrameR(SEXP x);
+extern SEXP cpsortR(SEXP x, SEXP decreasing, SEXP nthread, SEXP nalast, SEXP env, SEXP index, SEXP clocale);
 extern SEXP dfToMatrix(SEXP df);
-extern SEXP dupR(SEXP x, SEXP uniq);
-extern SEXP dupVecR(SEXP x, SEXP uniq);
-extern SEXP dupVecIndexOnlyR(SEXP x);
-extern SEXP dupDataFrameR(SEXP x, SEXP uniq);
-extern SEXP dupMatrixR(SEXP x, SEXP uniq, Rboolean idx);
+extern SEXP dupR(SEXP x, SEXP uniq, SEXP fromLast);
+extern SEXP dupVecR(SEXP x, SEXP uniq, SEXP fromLast);
+extern SEXP dupVecIndexOnlyR(SEXP x, SEXP fromLast);
+extern SEXP dupDataFrameR(SEXP x, SEXP uniq, SEXP fromLast);
+extern SEXP dupMatrixR(SEXP x, SEXP uniq, Rboolean idx, SEXP fromLast);
 extern SEXP dupLenR(SEXP x);
 extern SEXP dupLenDataFrameR(SEXP x);
 extern SEXP dupLenMatrixR(SEXP x);

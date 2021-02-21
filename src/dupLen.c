@@ -1,6 +1,6 @@
 /*
  * kit : Useful R Functions Implemented in C
- * Copyright (C) 2020  Morgan Jacob
+ * Copyright (C) 2020-2021  Morgan Jacob
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ SEXP dupLenDataFrameR(SEXP x) {
   const R_xlen_t len_i = xlength(px[0]);
   SEXP mlv = PROTECT(allocMatrix(INTSXP, (int)len_i, (int)len_x));
   for (R_xlen_t i = 0; i < len_x; ++i) {
-    memcpy(INTEGER(mlv)+i*len_i, INTEGER(PROTECT(dupVecIndexOnlyR(px[i]))), (unsigned)len_i*sizeof(int));
+    memcpy(INTEGER(mlv)+i*len_i, INTEGER(PROTECT(dupVecIndexOnlyR(px[i], ScalarLogical(false)))), (unsigned)len_i*sizeof(int));
   }
   UNPROTECT((int)len_x);
   const size_t n2 = 2U * (size_t) len_i;
@@ -136,7 +136,7 @@ SEXP dupLenMatrixR(SEXP x) {
           }
         }
         goto labelml2;
-        labelml1:;
+        labelml1:;// # nocov
         id++; id %= M; // # nocov
       }
       h[id] = (int) i + 1;
@@ -155,12 +155,12 @@ SEXP dupLenMatrixR(SEXP x) {
       while (h[id]) {
         for (R_xlen_t j = 0; j < len_x; ++j) {
           if (px[h[id]-1+j*len_i] != px[i+j*len_i]) {
-            goto labelmi1;
+            goto labelmi1; // # nocov
           }
         }
         goto labelmi2;
         labelmi1:;
-        id++; id %= M;
+        id++; id %= M; // # nocov
       }
       h[id] = (int) i + 1;
       count++;
@@ -241,12 +241,12 @@ SEXP dupLenMatrixR(SEXP x) {
       while (h[id]) {
         for (R_xlen_t j = 0; j < len_x; ++j) {
           if (px[h[id]-1+j*len_i] != px[i+j*len_i]) {
-            goto labelms1;
+            goto labelms1; // # nocov
           }
         }
         goto labelms2;
-        labelms1:;
-        id++; id %= M;
+        labelms1:; // # nocov
+        id++; id %= M; // # nocov
       }
       h[id] = (int) i + 1;
       count++;
@@ -265,13 +265,48 @@ SEXP dupLenMatrixR(SEXP x) {
  */
 
 SEXP dupLenVecR(SEXP x) {
+  if (isFactor(x)) {
+    const int len = LENGTH(PROTECT(getAttrib(x, R_LevelsSymbol)));
+    UNPROTECT(1);
+    bool *restrict count = (bool*)calloc(len,sizeof(bool));
+    const int *restrict px = INTEGER(x);
+    const int xlen = LENGTH(x);
+    int j = 0;
+    for (int i = 0; i < xlen; ++i) {
+      if (!count[px[i]]) {
+        j++;
+        if (j == len)
+          break;
+        count[px[i]] = true;
+      }
+    }
+    free(count);
+    return ScalarInteger(j);
+  }
+  if (isLogical(x)) {
+    bool *restrict count = (bool*)calloc(3,sizeof(bool));
+    const int *restrict px = LOGICAL(x);
+    const int xlen = LENGTH(x);
+    int j = 0;
+    for (int i = 0; i < xlen; ++i) {
+      const int cs = px[i] == NA_LOGICAL ? 2 : px[i];
+      if (!count[cs]) {
+        j++;
+        if (j == 3)
+          break;
+        count[cs] = true;
+      }
+    }
+    free(count);
+    return ScalarInteger(j);
+  }
   const R_xlen_t n = xlength(x);
   const SEXPTYPE tx = UTYPEOF(x);
   int K;
   size_t M;
   if (tx == INTSXP || tx == STRSXP || tx == REALSXP || tx == CPLXSXP ) {
     if(n >= 1073741824) {
-      error("Length of 'x' is too large. (Long vector not supported yet)");
+      error("Length of 'x' is too large. (Long vector not supported yet)"); // # nocov
     }
     const size_t n2 = 2U * (size_t) n;
     M = 256;
@@ -280,33 +315,13 @@ SEXP dupLenVecR(SEXP x) {
       M *= 2;
       K++;
     }
-  } else if (tx == LGLSXP) {
-    M = 4;
-    K = 2;
   } else {
-    error("Type %s is not supported.", type2char(tx));
+    error("Type %s is not supported.", type2char(tx)); // # nocov
   }
   R_xlen_t count = 0;
   int *h = (int*)calloc(M, sizeof(int));
   switch (tx) {
-  case LGLSXP: {
-    const int *restrict px = LOGICAL(x);
-    size_t id = 0;
-    for (int i = 0; i < n; ++i) {
-      id = (px[i] == NA_LOGICAL) ? 2U : (size_t) px[i];
-      while (h[id]) {
-        if (px[h[id]-1]==px[i]) {
-          goto lbl;
-        }
-        id++; id %= M; // # nocov
-      }
-      h[id] = (int) i + 1;
-      count++;
-      lbl:;
-    }
-    free(h);
-  } break;
-  case INTSXP: { // think about factor and levels number
+  case INTSXP: {
     const int *restrict px = INTEGER(x);
     size_t id = 0;
     for (int i = 0; i < n; ++i) {
@@ -315,7 +330,7 @@ SEXP dupLenVecR(SEXP x) {
         if (px[h[id]-1]==px[i]) {
           goto ibl;
         }
-        id++; id %= M;
+        id++; id %= M; // # nocov
       }
       h[id] = (int) i + 1;
       count++;

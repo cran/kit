@@ -1,6 +1,6 @@
 /*
  * kit : Useful R Functions Implemented in C
- * Copyright (C) 2020  Morgan Jacob
+ * Copyright (C) 2020-2021  Morgan Jacob
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,15 @@ SEXP psumR(SEXP na, SEXP args) {
   SEXPTYPE type0 = anstype;
   const R_xlen_t len0 = xlength(args0);
   if (anstype != INTSXP && anstype != REALSXP && anstype != CPLXSXP) {
-    error("Argument %d is of type %s. Only integer, double and complex types are supported.", 1, type2char(anstype));
+    error("Argument %d is of type %s. Only integer, double and complex types are supported."
+          "Data.frame (of the previous types) is also supported as a single input. ",
+          1, type2char(anstype));
   }
   for (int i = 1; i < n; ++i) {
     SEXPTYPE type = UTYPEOF(PTR_ETL(args, i));
     R_xlen_t len1 = xlength(PTR_ETL(args, i));
     if (type != INTSXP && type != REALSXP && type != CPLXSXP) {
-      error("Argument %d is of type %s. Only integer, double and complex types are supported.", i+1, type2char(type));
+      error("Argument %d is of type %s. Only integer, double and complex types are supported. " , i+1, type2char(type));
     }
     if (len1 != len0) {
       error("Argument %d is of length %zu but argument %d is of length %zu. "
@@ -157,7 +159,9 @@ SEXP pprodR(SEXP na, SEXP args) {
   SEXPTYPE type0 = anstype;
   const R_xlen_t len0 = xlength(args0);
   if (anstype != INTSXP && anstype != REALSXP && anstype != CPLXSXP) {
-    error("Argument %d is of type %s. Only integer, double and complex types are supported.", 1, type2char(anstype));
+    error("Argument %d is of type %s. Only integer, double and complex types are supported."
+          "Data.frame (of the previous types) is also supported as a single input. ",
+          1, type2char(anstype));
   }
   for (int i = 1; i < n; ++i) {
     SEXPTYPE type = UTYPEOF(PTR_ETL(args, i));
@@ -282,7 +286,9 @@ SEXP pallR(SEXP na, SEXP args) {
   SEXPTYPE anstype = UTYPEOF(args0);
   const R_xlen_t len0 = xlength(args0);
   if (anstype != LGLSXP) {
-    error("Argument %d is of type %s. Only logical type is supported.", 1, type2char(anstype));
+    error("Argument %d is of type %s. Only logical type is supported."
+          "Data.frame (of logical vectors) is also supported as a single input. ",
+          1, type2char(anstype));
   }
   for (int i = 1; i < n; ++i) {
     SEXPTYPE type = UTYPEOF(PTR_ETL(args, i));
@@ -338,7 +344,9 @@ SEXP panyR(SEXP na, SEXP args) {
   SEXPTYPE anstype = UTYPEOF(args0);
   const R_xlen_t len0 = xlength(args0);
   if (anstype != LGLSXP) {
-    error("Argument %d is of type %s. Only logical type is supported.", 1, type2char(anstype));
+    error("Argument %d is of type %s. Only logical type is supported."
+          "Data.frame (of logical vectors) is also supported as a single input. ",
+          1, type2char(anstype));
   }
   for (int i = 1; i < n; ++i) {
     SEXPTYPE type = UTYPEOF(PTR_ETL(args, i));
@@ -395,7 +403,9 @@ SEXP pmeanR(SEXP na, SEXP args) {
   SEXPTYPE type0 = REALSXP;
   const R_xlen_t len0 = xlength(args0);
   if (anstype != INTSXP && anstype != REALSXP) {
-    error("Argument %d is of type %s. Only integer and double types are supported.", 1, type2char(anstype));
+    error("Argument %d is of type %s. Only integer and double types are supported."
+          "Data.frame (of the previous types) is also supported as a single input. ",
+          1, type2char(anstype));
   }
   for (int i = 1; i < n; ++i) {
     SEXPTYPE type = UTYPEOF(PTR_ETL(args, i));
@@ -528,7 +538,7 @@ SEXP pcountR(SEXP x, SEXP args) {
   UNPROTECT(1 + nprotect);
   SEXP ans;
   if (len0 > INT_MAX) {
-    ans = PROTECT(allocVector(REALSXP, len0));
+    ans = PROTECT(allocVector(REALSXP, len0)); // # nocov start
     double *restrict pans = REAL(ans);
     memset(pans, 0, (unsigned)len0*sizeof(double));
     switch(anstype) {
@@ -587,7 +597,7 @@ SEXP pcountR(SEXP x, SEXP args) {
         }
       }
     } break;
-    }
+    } // # nocov end
   } else {
     ans = PROTECT(allocVector(INTSXP, len0));
     int *restrict pans = INTEGER(ans);
