@@ -1,5 +1,5 @@
 # Function calls
-charToFact  = function(x, nThread=getOption("kit.nThread")) .Call(CcharToFactR, x, FALSE,nThread, NA, parent.frame())
+charToFact  = function(x, decreasing=FALSE, nThread=getOption("kit.nThread")) .Call(CcharToFactR, x, decreasing, nThread, NA, parent.frame())
 count       = function(x, value) .Call(CcountR, x, value)
 countNA     = function(x) .Call(CcountNAR, x)
 countOccur  = function(x) .Call(CcountOccurR, x)
@@ -16,11 +16,11 @@ pmean       = function(..., na.rm=FALSE) .Call(CpmeanR, na.rm, if (length(a <- l
 pprod       = function(..., na.rm=FALSE) .Call(CpprodR, na.rm, if (length(a <- list(...)) == 1 && is.data.frame(a[[1]])) a[[1]] else a)
 psum        = function(..., na.rm=FALSE) .Call(CpsumR,  na.rm, if (length(a <- list(...)) == 1 && is.data.frame(a[[1]])) a[[1]] else a)
 setlevels   = function(x, old = levels(x), new, skip_absent=FALSE) invisible(.Call(CsetlevelsR, x, old, new, skip_absent))
-topn        = function(vec, n=6L, decreasing=TRUE, hasna=TRUE) .Call(CtopnR, vec, n, decreasing, hasna)
+topn        = function(vec, n=6L, decreasing=TRUE, hasna=TRUE,index=TRUE) if(index) .Call(CtopnR, vec, n, decreasing, hasna) else vec[.Call(CtopnR, vec, n, decreasing, hasna)]
 uniqLen     = function(x) .Call(CdupLenR, x)
 vswitch     = function(x, values, outputs, default=NULL, nThread=getOption("kit.nThread"), checkEnc = TRUE) .Call(CvswitchR, x, values, outputs, default, nThread, checkEnc)
 
-.onAttach   = function(libname, pkgname) packageStartupMessage(paste0("Attaching kit 0.0.6 (OPENMP ",if(.Call(CompEnabledR)) "enabled" else "disabled"," using 1 thread)"))
+.onAttach   = function(libname, pkgname) packageStartupMessage(paste0("Attaching kit 0.0.7 (OPENMP ",if(.Call(CompEnabledR)) "enabled" else "disabled"," using 1 thread)"))
 .onLoad     = function(libname, pkgname) options("kit.nThread"=1L)   #nocov
 .onUnload   = function(libpath) library.dynam.unload("kit", libpath) #nocov
 

@@ -4,6 +4,31 @@
 
 \newcommand{\CRANpkg}{\href{https://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
+\section{version 0.0.7 (2021-03-07)}{
+  \subsection{New Features}{
+    \itemize{
+      \item Function \code{\strong{charToFact}} gains a new argument \code{decreasing=FALSE} to be used
+      to order levels of the output in decreasing or increasing order.
+      
+      \item Function \code{\strong{topn}} gains a new argument \code{index=TRUE} to be used return
+      index (\code{TRUE}) or values (\code{FALSE}) of input vector.
+    }
+  }
+  \subsection{Bug Fixes}{
+    \itemize{
+      \item Some tests of memory access errors using valgrind and AddressSanitizer were reported by CRAN.
+      An attempt to fix these errors has been submitted as part of this package version. It also seems that
+      these same errors were causing some tests to fail for \code{funique} and \code{psort} on some platforms.
+    }
+  }
+  \subsection{Notes}{
+    \itemize{
+      \item Functions \code{\strong{pmean}}, \code{\strong{pprod}} and \code{\strong{psum}} will result
+      in error if used with factors. Documentation has been updated.
+    }
+  }
+}
+
 \section{version 0.0.6 (2021-02-21)}{
   \subsection{New Features}{
     \itemize{
