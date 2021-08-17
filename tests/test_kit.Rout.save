@@ -53,7 +53,7 @@ Type 'q()' to quit R.
 + }
 > 
 > library(kit); unloadNamespace("kit")
-Attaching kit 0.0.7 (OPENMP enabled using 1 thread)
+Attaching kit 0.0.8 (OPENMP enabled using 1 thread)
 > 
 > topn        = kit::topn
 > setlevels   = kit::setlevels
@@ -76,6 +76,9 @@ Attaching kit 0.0.7 (OPENMP enabled using 1 thread)
 > nswitch     = kit::nswitch
 > psort       = kit::psort
 > charToFact  = kit::charToFact
+> shareData   = kit::shareData
+> getData     = kit::getData
+> clearData   = kit::clearData
 > 
 > # --------------------------------------------------------------------------------------------------
 > #                                   topn 
@@ -86,7 +89,7 @@ Attaching kit 0.0.7 (OPENMP enabled using 1 thread)
 > x2 = c(NA_integer_, NA_integer_, NA_integer_)
 > x3 = as.numeric(x2)
 > x4 = as.raw(c(1,2,3))
-> x5 = sample(c(1:1000),1e3,TRUE)
+> x5 = sample(c(1:1000),3e3,TRUE)
 > x6 = sample(as.numeric(c(1:1000)),1e3,TRUE)
 > class2134 = setClass("class2134", slots=list(x="numeric"))
 > s1 = class2134(x=20191231)
@@ -156,7 +159,7 @@ Attaching kit 0.0.7 (OPENMP enabled using 1 thread)
 > check("0001.064", topn(x3, 2L, decreasing=TRUE), order(x3, decreasing=TRUE)[1:2])
 > check("0001.065", topn(x3, 3L, decreasing=TRUE), order(x3, decreasing=TRUE)[1:3])
 > check("0001.066", topn(x0, -1L), error = "Please enter a positive integer larger or equal to 1.")
-> check("0001.067", topn(x0, 1001L), error = "Function 'topn' is not built for large value of 'n'. The algorithm is made for small values. Please prefer the 'order' function if you want to proceed with such large value.")
+> check("0001.067", topn(x5, 2001L,decreasing = TRUE), order(x5, decreasing=TRUE)[1:2001])
 > check("0001.068", topn(x0, 100L,decreasing = FALSE), order(x0)[1:13], warning = "'n' is larger than length of 'vec'. 'n' will be set to length of 'vec'.")
 > check("0001.069", topn(x0, 10L, decreasing = NA), error = "Argument 'decreasing' must be TRUE or FALSE and length 1.")
 > check("0001.070", topn(s1, 10L, decreasing = NA), error = "S4 class objects are not supported.")
@@ -218,6 +221,7 @@ Attaching kit 0.0.7 (OPENMP enabled using 1 thread)
 > check("0001.126", topn(x4, 2L, decreasing = TRUE,hasna = FALSE), error = "Type raw is not supported.")
 > check("0001.127", topn(x4, 2L, decreasing=FALSE,hasna = FALSE), error = "Type raw is not supported.")
 > check("0001.128", topn(c(1,2,4,10,2,3), 2L, hasna=c(FALSE,TRUE)), error = "Argument 'hasna' must be TRUE or FALSE and length 1.")
+> check("0001.129", topn(x5, 2001L,decreasing = FALSE), order(x5, decreasing=FALSE)[1:2001])
 > 
 > rm(s1, class2134, x0, x1, x2, x3, x4, x5, x6)
 > 
@@ -1663,15 +1667,28 @@ Attaching kit 0.0.7 (OPENMP enabled using 1 thread)
 > check("0021.005", charToFact(1L), error="Argument 'x' must be of type character.")
 > check("0021.006", charToFact(c("a","b",NA,"a")), addNA(as.factor(c("a","b",NA,"a"))))
 > check("0021.007", levels(charToFact(x1,decreasing = TRUE)), sort(levels(as.factor(x1)),decreasing = TRUE))
+> check("0021.008", charToFact(c("a","b"),addNA=NA), error="Argument 'addNA' must be TRUE or FALSE.")
+> check("0021.009", charToFact(c("a","b",NA,"a"), addNA=FALSE), as.factor(c("a","b",NA,"a")))
 > 
 > rm(x1)
+> 
+> # --------------------------------------------------------------------------------------------------
+> #                                   shareData
+> # --------------------------------------------------------------------------------------------------
+> 
+> x = shareData(mtcars,"share1")
+> 
+> check("0022.001", getData("share1"), mtcars)
+> check("0022.002", clearData(x), TRUE)
+> 
+> rm(x)
 > 
 > # --------------------------------------------------------------------------------------------------
 > #                                   CLEAN FUNCTIONS
 > # --------------------------------------------------------------------------------------------------
 > 
 > rm(check,count,countNA,countOccur,fduplicated,fpos,funique,iif,nswitch,nif,pall,pany,pcount,
-+    pmean,pprod,psum,setlevels,topn,uniqLen,vswitch,psort,charToFact)
++    pmean,pprod,psum,setlevels,topn,uniqLen,vswitch,psort,charToFact,shareData,getData,clearData)
 > 
 > # --------------------------------------------------------------------------------------------------
 > #                                   END
@@ -1679,4 +1696,4 @@ Attaching kit 0.0.7 (OPENMP enabled using 1 thread)
 > 
 > proc.time()
    user  system elapsed 
-  4.339   0.727   5.160 
+  4.169   0.504   4.671 
