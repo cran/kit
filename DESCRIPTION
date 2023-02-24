@@ -1,8 +1,8 @@
 Package: kit
 Type: Package
 Title: Data Manipulation Functions Implemented in C
-Version: 0.0.12
-Date: 2022-10-29
+Version: 0.0.13
+Date: 2023-02-24
 Authors@R: c(person("Morgan", "Jacob", role = c("aut", "cre", "cph"), email = "morgan.emailbox@gmail.com"), 
              person("Sebastian", "Krantz", role = "ctb"))
 Author: Morgan Jacob [aut, cre, cph],
@@ -16,5 +16,5 @@ BugReports: https://github.com/2005m/kit/issues
 NeedsCompilation: yes
 ByteCompile: TRUE
 Repository: CRAN
-Packaged: 2022-10-26 18:55:45 UTC; giuliabertuzzi
-Date/Publication: 2022-10-26 19:42:36 UTC
+Packaged: 2023-02-24 20:25:11 UTC; giuliabertuzzi
+Date/Publication: 2023-02-24 21:10:02 UTC

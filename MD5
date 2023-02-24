@@ -1,9 +1,9 @@
-808940202e4d4a846ca999053494fd49 *DESCRIPTION
+7feef22b74ec2c4b8a995afc81cfcfac *DESCRIPTION
 c797ca387dccc02751cfe85108fb0159 *NAMESPACE
-8a9223f58aa48081d1000d561b6f67c2 *R/call.R
+2711bdfce7dc1646b0cb8c13d58c3f95 *R/call.R
 6071edd604dbeb75308cfbedc7790398 *cleanup
-66d4daddd0163539f19e2cb783fc3bb9 *configure
-d0896c4c31c11594ae5dbf350357e751 *inst/NEWS.Rd
+78e6c973b00716ae67590ee248272148 *configure
+3a7dba2c08d9fff5b5d1b059508d1dbc *inst/NEWS.Rd
 2ddfa8d8739668eedda260e6ddc935d4 *man/charToFact.Rd
 8f19a2c9feb2f352580fd4892650f285 *man/count.Rd
 6d9bff9dee1049f5761a4f615cfc54bf *man/fpos.Rd
@@ -11,7 +11,7 @@ d0896c4c31c11594ae5dbf350357e751 *inst/NEWS.Rd
 290552d634a47a886682515ef363e93f *man/iif.Rd
 578fe4903cc4f5d7bc5a6f346be1e9e9 *man/nif.Rd
 ef4ce6330a0f6a2ec63ccfd365729963 *man/psort.Rd
-accaeadc77acd48aff128939f64b9279 *man/psum.Rd
+ea190d445b80de1de2b1de55ce2f29df *man/psum.Rd
 14e3add07190fd18d0161f4f0b0b5257 *man/setlevels.Rd
 a137f7855b41b074e2babaf8a1562551 *man/shareData.Rd
 54f91d543a10f8c9aef7082da2b86de7 *man/topn.Rd
@@ -26,10 +26,10 @@ c362509861cd6835c1d8adbb0dce02b4 *src/iif.c
 270202fe371ba971048ddf8e68c1237e *src/kit.h
 8e997b5d5d44af5cea7eafb48a4b9745 *src/nswitch.c
 e06a11a84ff7a031b398d4492a5026ff *src/psort.c
-6c767ce676609fbd1256d4bc9d9686a8 *src/psum.c
+615ade898350efa3c64935406cc770c7 *src/psum.c
 bafdafd654269acd054525571dbe1b44 *src/share.c
 53711690f6c15f3f36edb4b9360043a4 *src/topn.c
 a7083ca5b2afa227330c60047c9315b8 *src/utils.c
 3476a1e2381bb86f68a72844ee61bc7b *src/vswitch.c
-eb891f07d4cc6a9ed74d7fb1350002f3 *tests/test_kit.R
-9618662fa4ef2fca318e7e49e79ebe1b *tests/test_kit.Rout.save
+3f8dc4ecf4ad26fb959a2291ab167630 *tests/test_kit.R
+cd9d57bf25fe714c5035d1ad634b6039 *tests/test_kit.Rout.save
