@@ -1,9 +1,9 @@
-976797b4082b1b47ea10572103f3468d *DESCRIPTION
+3574c70990b708cfc96c9447c58bbcb6 *DESCRIPTION
 c797ca387dccc02751cfe85108fb0159 *NAMESPACE
-d684d1e852a7979d1f13cb6e9c171d8a *R/call.R
+24ce4885aedbca5309ed2ee126324aa2 *R/call.R
 6071edd604dbeb75308cfbedc7790398 *cleanup
-ebb6ec9a2df672303a3161254100f42d *configure
-cdddf0b1457b495d4de9965fcb2bc50b *inst/NEWS.Rd
+d2761d00effd7b096a5bea21bc38742e *configure
+771ad7a0ba9d6856cecdc324826a8d09 *inst/NEWS.Rd
 2ddfa8d8739668eedda260e6ddc935d4 *man/charToFact.Rd
 8f19a2c9feb2f352580fd4892650f285 *man/count.Rd
 6d9bff9dee1049f5761a4f615cfc54bf *man/fpos.Rd
@@ -32,4 +32,4 @@ bafdafd654269acd054525571dbe1b44 *src/share.c
 b9daa73f97bb19027aaa5bfdc00c4087 *src/utils.c
 3476a1e2381bb86f68a72844ee61bc7b *src/vswitch.c
 3f8dc4ecf4ad26fb959a2291ab167630 *tests/test_kit.R
-2f6297252220d85dc1120c9d28f4b5ac *tests/test_kit.Rout.save
+de61e8bccc19816a0e07c9153a33473b *tests/test_kit.Rout.save
