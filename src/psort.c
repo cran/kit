@@ -1,6 +1,6 @@
 /*
  * kit : Useful R Functions Implemented in C
- * Copyright (C) 2020-2021  Morgan Jacob
+ * Copyright (C) 2020-2024  Morgan Jacob
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -452,7 +452,7 @@ SEXP cpsortR (SEXP x, SEXP decreasing, SEXP nthread, SEXP nalast, SEXP env, SEXP
         }
       }
       if (ct > 0) {
-        SETLENGTH(valSorted, nlen-ct);
+        valSorted = Rf_xlengthgets(valSorted, nlen-ct);
       }
     }
     UNPROTECT(2);
@@ -513,7 +513,7 @@ SEXP cpsortR (SEXP x, SEXP decreasing, SEXP nthread, SEXP nalast, SEXP env, SEXP
         }
       }
       if (ct > 0) {
-        SETLENGTH(ans, xlen-ct);
+        ans = Rf_xlengthgets(ans, xlen-ct);
       }
     }
   } else {*/
@@ -531,7 +531,10 @@ SEXP cpsortR (SEXP x, SEXP decreasing, SEXP nthread, SEXP nalast, SEXP env, SEXP
         }
       }
       if (ct > 0) {
-        SETLENGTH(ans, xlen-ct);
+        ans = Rf_xlengthgets(ans, xlen-ct);
+        if (!cindex) {
+          copyMostAttrib(x, ans);
+        }
       }
     }
   //}
@@ -610,7 +613,7 @@ SEXP charToFactR (SEXP x, SEXP decreasing, SEXP nthread, SEXP nalast, SEXP env, 
   
   free(lookupTable);
   if (addNAv == 0) {
-    SETLENGTH(valSorted, LENGTH(valSorted)-1);
+    valSorted = Rf_xlengthgets(valSorted, LENGTH(valSorted)-1);
   }
   setAttrib(ans, R_LevelsSymbol, valSorted);
   SEXP classV = PROTECT(allocVector(STRSXP,1));
