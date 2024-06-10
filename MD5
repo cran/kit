@@ -1,9 +1,9 @@
-8269b4e00504cab32e6748c5e18792c7 *DESCRIPTION
+378b132040532a0240ea10fb6324984c *DESCRIPTION
 c797ca387dccc02751cfe85108fb0159 *NAMESPACE
-1eb8bec6ee346933bfbff2acda381402 *R/call.R
+afdd17df63f1a06c519bea52c696c04e *R/call.R
 6071edd604dbeb75308cfbedc7790398 *cleanup
 d2761d00effd7b096a5bea21bc38742e *configure
-579d6713a55c0d47166988596a7defe5 *inst/NEWS.Rd
+1663021b062fc51d7db2efe337e3c735 *inst/NEWS.Rd
 2ddfa8d8739668eedda260e6ddc935d4 *man/charToFact.Rd
 8f19a2c9feb2f352580fd4892650f285 *man/count.Rd
 6d9bff9dee1049f5761a4f615cfc54bf *man/fpos.Rd
@@ -21,7 +21,7 @@ a52426250b954a335b1121948e057ee7 *src/Makevars.in
 f8a685dd117b590adaae0c0c6dfb8de2 *src/dup.c
 e89fa490ca241429f9f7adbea3b931de *src/dupLen.c
 5eaee76c99ff42679577592ae9c5a29f *src/fpos.c
-2a47a4eb3de647b3d2e21775c95ede42 *src/iif.c
+835f517eb81445beeb99fd24c046c6de *src/iif.c
 6d91dc90d2db4ede5f044b824d4f34a3 *src/init.c
 b929f70ab892f155eeead08c160ffc25 *src/kit.h
 b13fc207b052914c3d078eb5759cecce *src/nswitch.c
