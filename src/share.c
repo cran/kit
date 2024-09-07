@@ -64,7 +64,7 @@ static void map_finalizer (SEXP ext) {
   munmap(ptr->length, 256);
   shm_unlink(ptr->LENGTH_ID);
 #endif
-  Free(ptr);
+  R_Free(ptr);
   R_ClearExternalPtr(ext);
   if (verbose_finalizer) Rprintf("* Clear external pointer...OK\n");
 }
@@ -86,19 +86,19 @@ SEXP createMappingObjectR (SEXP MapObjectName, SEXP MapLengthName, SEXP DataObje
   const size_t BUF_SIZE = len*sizeof(Rbyte);
   if (verbose) Rprintf("* Data object size: %zu\n",len*sizeof(Rbyte));
   if (verbose) Rprintf("* Start mapping object...OK\n");
-  struct OBJECT *foo = Calloc(1, struct OBJECT);
+  struct OBJECT *foo = R_Calloc(1, struct OBJECT);
   SEXP ext = PROTECT(R_MakeExternalPtr(foo, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(ext, map_finalizer, TRUE);
   if (verbose) Rprintf("* Register finalizer...OK\n");
 #ifdef WIN32 
-  LPSTR pMN = (LPSTR) CHAR(STRING_PTR(MapObjectName)[0]);
-  LPSTR pML = (LPSTR) CHAR(STRING_PTR(MapLengthName)[0]);
+  LPSTR pMN = (LPSTR) CHAR(STRING_PTR_RO(MapObjectName)[0]);
+  LPSTR pML = (LPSTR) CHAR(STRING_PTR_RO(MapLengthName)[0]);
   foo->hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, BUF_SIZE, pMN);
   foo->hMapLength = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, 256, pML);
   if (foo->hMapFile == INVALID_HANDLE_VALUE || foo->hMapLength == INVALID_HANDLE_VALUE) {
 #else
-  const char *pMN = CHAR(STRING_PTR(MapObjectName)[0]);
-  const char *pML = CHAR(STRING_PTR(MapLengthName)[0]);
+  const char *pMN = CHAR(STRING_PTR_RO(MapObjectName)[0]);
+  const char *pML = CHAR(STRING_PTR_RO(MapLengthName)[0]);
   foo->STORAGE_ID = pMN; 
   foo->LENGTH_ID = pML;
   foo->STORAGE_SIZE = BUF_SIZE;
@@ -163,14 +163,14 @@ SEXP getMappingObjectR (SEXP MapObjectName, SEXP MapLengthName, SEXP verboseArg)
   }
   const bool verbose = asLogical(verboseArg);
 #ifdef WIN32
-  LPSTR pMN = (LPSTR) CHAR(STRING_PTR(MapObjectName)[0]);
-  LPSTR pML = (LPSTR) CHAR(STRING_PTR(MapLengthName)[0]);
+  LPSTR pMN = (LPSTR) CHAR(STRING_PTR_RO(MapObjectName)[0]);
+  LPSTR pML = (LPSTR) CHAR(STRING_PTR_RO(MapLengthName)[0]);
   HANDLE hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, pMN);
   HANDLE hMapLength = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, pML);
   if (hMapFile == INVALID_HANDLE_VALUE || hMapLength == INVALID_HANDLE_VALUE) {
 #else
-  const char *pMN = CHAR(STRING_PTR(MapObjectName)[0]);
-  const char *pML = CHAR(STRING_PTR(MapLengthName)[0]);
+  const char *pMN = CHAR(STRING_PTR_RO(MapObjectName)[0]);
+  const char *pML = CHAR(STRING_PTR_RO(MapLengthName)[0]);
   int fd_addr = shm_open(pMN, O_RDONLY, S_IRUSR | S_IWUSR);
   int fd_length = shm_open(pML, O_RDONLY, S_IRUSR | S_IWUSR);
   if (fd_addr == -1 || fd_length == -1) {
