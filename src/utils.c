@@ -1,6 +1,6 @@
 /*
  * kit : Useful R Functions Implemented in C
- * Copyright (C) 2020-2024  Morgan Jacob
+ * Copyright (C) 2020-2025  Morgan Jacob
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -387,7 +387,7 @@ SEXP subSetColMatrix(SEXP x, R_xlen_t idx) { // # nocov start
   const R_xlen_t pidx = idx * len_i;
   switch(xt) {
   case LGLSXP : {
-    memcpy(LOGICAL(ans), LOGICAL(x)+pidx, (unsigned)len_i*sizeof(Rboolean));
+    memcpy(LOGICAL(ans), LOGICAL(x)+pidx, (unsigned)len_i*sizeof(*LOGICAL(ans)));
   } break;
   case INTSXP : {
     memcpy(INTEGER(ans), INTEGER(x)+pidx, (unsigned)len_i*sizeof(int));
@@ -464,7 +464,7 @@ SEXP addColToDataFrame(SEXP df, SEXP mcol, SEXP coln) {
 
 // Try to improve this by removing element in the loop or initilising at 0 
 SEXP countOccurR(SEXP x) { // can be improved for factors
-  if (isFrame(x)) {
+  if (isDataFrame(x)) {
     SEXP ans = PROTECT(countOccurDataFrameR(x));
     UNPROTECT(1);
     return ans;

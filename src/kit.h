@@ -15,14 +15,20 @@
 #include <R.h>
 #include <R_ext/Rdynload.h>
 #include <Rversion.h>
+
 #if !defined(R_VERSION) || R_VERSION < R_Version(3, 5, 0)
   #define USE_RINTERNALS
   #define DATAPTR_RO(x) ((const void *)DATAPTR(x))
 #endif
+
 #include <Rinternals.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+
+#if R_VERSION < R_Version(4, 5, 0)
+# define isDataFrame(x) Rf_isFrame(x)
+#endif
 
 #if !defined SSIZE_MAX
   #define SSIZE_MAX LLONG_MAX

@@ -1,6 +1,6 @@
 /*
  * kit : Useful R Functions Implemented in C
- * Copyright (C) 2020-2024  Morgan Jacob
+ * Copyright (C) 2020-2025  Morgan Jacob
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ SEXP fposR(SEXP ndle, SEXP hsk, SEXP all, SEXP overlap) {
   if (isS4(hsk) || isS4(ndle)) {
     error("S4 class objects are not supported.");
   }
-  if (isFrame(ndle) || isFrame(hsk)) {
+  if (isDataFrame(ndle) || isDataFrame(hsk)) {
     error("Please note that data.frame(s) are not supported.");
   }
   if (!R_compute_identical(PROTECT(GetArrayDimnames(ndle)), R_NilValue, 0)) {
